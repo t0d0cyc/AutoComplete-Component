@@ -1,0 +1,36 @@
+*{
+    /* background-image: url(https://static.vecteezy.com/system/resources/previews/049/855/259/non_2x/nature-background-high-resolution-wallpaper-for-a-serene-and-stunning-view-photo.jpg); */
+    /* background-color: blue; */
+}
+
+/* .container{
+    width: 100%;
+    max-width: 500px;
+} */
+
+.left{
+    width: 200px;
+    font-size: 16px;
+    /* border: 1px solid #d4d4d4; */
+    opacity: 0.75;
+    position: absolute;
+}
+
+.suggestions{
+    list-style: none;
+    margin: 0px;
+    padding: 0px;
+    /* border-top: 1px solid #d4d4d4; */
+    background-color: rgba(247,247,247,0.75);
+    z-index: 1000;
+}
+
+.suggestions li{
+    list-style: none;
+    padding: 5px;
+    cursor: pointer
+}
+
+.left li:hover{
+    background-color: rgba(212,212,212);
+}
