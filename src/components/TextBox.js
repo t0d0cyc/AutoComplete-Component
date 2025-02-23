@@ -15,7 +15,6 @@ export default function TextBox(props) {
     temp.pop();
     temp.push(suggestion);
     setShowSuggestions(false);
-    // props.valueChange(temp.join(" ") + " ");
     props.valueChange(temp.join(" "));
   }
 
