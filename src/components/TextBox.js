@@ -1,12 +1,10 @@
+import { useState, useEffect, useRef } from "react";
+import * as Icon from '@livingdesign/icons-indigo';
 import { Button, TextField } from "@livingdesign/react";
 import options from "an-array-of-english-words";
-import { useState,useEffect,useRef } from "react";
 
 export default function TextBox(props) {
-  const temp = props.value.split(/(\s+)/);
-  const word = temp[temp.length - 1];
-  const suggestions = word === "" ? [] : (options.filter((option) => 
-    option.toLowerCase().startsWith(word.toLowerCase())).slice(0,props.numberOfSuggestions));
+  const [suggestions, setSuggestions] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
   const autoCompleteRef = useRef(null);
 
@@ -31,18 +29,29 @@ export default function TextBox(props) {
     }
   }, [])
 
+  useEffect(() => {
+    const delayDebounceFn = setTimeout(() => {
+        const temp = props.value.split(/(\s+)/);
+        const word = temp[temp.length - 1];
+        setSuggestions(word === "" ? [] : (options.filter((option) => 
+          option.toLowerCase().startsWith(word.toLowerCase())).slice(0,props.numberOfSuggestions)));
+    }, 400) // 400ms delay after typing
+  
+    return () => clearTimeout(delayDebounceFn)
+  }, [props.value])
+
   const handleOnChange = (event) => {
     props.handleChange(event);
     setShowSuggestions(true);
   }
-  
+
   return (
     <>
       <div style = {{fontSize : "10px"}} ref = {autoCompleteRef}>
           <TextField
           label= {props.label}
+          trailing={<Icon.CloseCircleFill onClick = {props.handleClick} style = {{cursor: "pointer"}}/>}
           onChange = {handleOnChange}
-          trailing={<Button onClick = {props.handleClick}>Delete</Button>}
           value = {props.value}
           />
       </div>
@@ -53,10 +62,9 @@ export default function TextBox(props) {
                         <li onClick={() => {handleValueChange(suggestion)}} key={suggestion}>
                             {suggestion}
                         </li>
-                    )
-                    )}
+                    ))}
                 </ul>
-                )}
+            )}
         </div>
     </>
   )
