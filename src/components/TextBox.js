@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import * as Icon from "@livingdesign/icons-indigo";
-import { LineClamp, TextField } from "@livingdesign/react";
+import {TextField } from "@livingdesign/react";
 
 export default function TextBox(props) {
   const [suggestions, setSuggestions] = useState([]);
@@ -89,7 +89,7 @@ export default function TextBox(props) {
   
 
   //handles the highlighted text functionality
-  const highlightMatchedText = (suggestion, input) => {
+  const highlightMatchedText = useCallback((suggestion, input) => {
     const startIdx = suggestion.toLowerCase().indexOf(input.toLowerCase());
     if (startIdx === 0) {
       const endIdx = input.length;
@@ -104,7 +104,8 @@ export default function TextBox(props) {
       );
     }
     return suggestion;
-  };
+  },[]);
+  
 
   return (
     <>
