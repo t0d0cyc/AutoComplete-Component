@@ -1,11 +1,15 @@
-.left{
+.text-bar{
+    font-size: 10px;
+}
+
+.suggestion-list{
     width: 147px;
     font-size: 16px;
     opacity: 0.75;
     position: absolute;
 }
 
-.suggestions{
+.suggestion{
     list-style: none;
     margin: 0px;
     padding: 0px;
@@ -13,12 +17,21 @@
     z-index: 1000;
 }
 
-.suggestions li{
+.suggestion li{
     list-style: none;
     padding: 5px;
     cursor: pointer
 }
 
-.left li:hover{
+.suggestion-list li:hover{
+    background-color: rgba(212,212,212);
+}
+
+.highlight {
+    background-color: yellow;
+    font-weight: bold; 
+}
+
+.highlighted-background{
     background-color: rgba(212,212,212);
 }
