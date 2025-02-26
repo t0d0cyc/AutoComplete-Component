@@ -4,7 +4,7 @@
 
 .suggestion-list{
     width: 147px;
-    font-size: 16px;
+    font-size: 14px;
     opacity: 0.75;
     position: absolute;
 }
@@ -28,7 +28,7 @@
 }
 
 .highlight {
-    background-color: yellow;
+    color: blue;
     font-weight: bold; 
 }
 
