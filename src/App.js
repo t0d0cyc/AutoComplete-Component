@@ -1,10 +1,13 @@
 import "./App.css"
-import TextBox from "./components/TextBox";
-import { useState } from "react";
+import AutoComplete from "./components/AutoComplete";
+import {useState} from "react";
 import {words} from "popular-english-words";
 
 export default function App() {
     const [value, setValue] = useState("");
+    const options = words.getAll();
+    const autoComplete = value === "" ? [] : (options.filter((option) => 
+      option.toLowerCase().startsWith(value.toLowerCase())).slice(0,10))
     const handleChange = (event) => {
         setValue(event.target.value);
     }
@@ -13,9 +16,8 @@ export default function App() {
     }
   return (
     <>
-        <TextBox value = {value} handleChange = {handleChange} handleClick = {handleClick} 
-        setValue = {setValue} label = "Auto-Complete Suggestions"
-        numberOfSuggestions = {10} words = {words}/>
+        <AutoComplete value = {value} handleChange = {handleChange} handleClick = {handleClick} 
+        setValue = {setValue} label = "Auto-Complete Suggestions" autoComplete = {autoComplete}/>
     </>
   )
 }
