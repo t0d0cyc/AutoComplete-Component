@@ -1,26 +1,70 @@
-import { useState, useEffect, useRef, useCallback, ChangeEvent } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import * as Icon from "@livingdesign/icons-indigo";
 import { TextField, List, ListItem } from "@livingdesign/react";
 
-// Define the prop types
-interface TextBoxProps {
+interface AutoCompleteProps {
   value: string;
-  label: string;
-  autoComplete: string[];
-  handleChange: (event: ChangeEvent<HTMLInputElement>) => void;
   setValue: (value: string) => void;
+  autoComplete: string[];
+  label?: string;
+  handleChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   handleClick: () => void;
-  button?: React.ReactNode;
-  icon?: React.ReactNode;
+  leading?: React.ReactNode;
+  trailing?: React.ReactNode;
+  inputFieldStyle?: React.CSSProperties;
 }
 
-export default function TextBox(props: TextBoxProps) {
+const AutoComplete: React.FC<AutoCompleteProps> = ({
+  value,
+  setValue,
+  autoComplete,
+  label,
+  handleChange,
+  handleClick,
+  leading,
+  trailing,
+  inputFieldStyle
+}) => {
   const [suggestions, setSuggestions] = useState<string[]>([]);
-  const [showSuggestions, setShowSuggestions] = useState<boolean>(false);
-  const [selectedItem, setSelectedItem] = useState<number>(-1);
-  const autoCompleteRef = useRef<HTMLDivElement | null>(null);
-  const inputValueRef = useRef<string>(props.value);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const [selectedItem, setSelectedItem] = useState(-1);
+  const autoCompleteRef = useRef<HTMLDivElement>(null);
+  const inputValueRef = useRef(value);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+
+  // Handles when a suggestion is clicked
+  const handleValueChange = useCallback((suggestion: string) => {
+    setShowSuggestions(false);
+    setValue(suggestion);
+  }, [setValue]);
+
+
+  // Handles when there is a change in the textfield
+  const handleOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    handleChange(event);
+    setSelectedItem(-1);
+    setShowSuggestions(true); // Show suggestions when typing
+  };
+
+
+  // Handles the highlighted text functionality
+  const highlightMatchedText = useCallback((suggestion: string, input: string) => {
+    const startIdx = suggestion.toLowerCase().indexOf(input.toLowerCase());
+    if (startIdx === 0) {
+      const endIdx = input.length;
+      const matchedText = suggestion.slice(0, endIdx);
+      const remainingText = suggestion.slice(endIdx);
+
+      return (
+        <div>
+          <span className="highlight">{matchedText}</span>
+          {remainingText}
+        </div>
+      );
+    }
+    return suggestion;
+  }, []);
 
 
   // For handling click outside component (suggestions should go away)
@@ -45,36 +89,34 @@ export default function TextBox(props: TextBoxProps) {
     }
 
     timeoutRef.current = setTimeout(() => {
-      if (inputValueRef.current !== props.value) {
-        inputValueRef.current = props.value;
-        setSuggestions(props.autoComplete);
+      if (inputValueRef.current !== value) {
+        inputValueRef.current = value;
+        setSuggestions(autoComplete);
       }
     }, 400);
 
     return () => {
       if (timeoutRef.current) clearTimeout(timeoutRef.current);
     };
-  }, [props.value]);
+  }, [value, autoComplete]);
 
 
   // For handling keyboard navigation through the list
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
       const len = suggestions.length;
-      if (len > 0) {
-        if (event.key === "ArrowUp" && selectedItem >= 0) {
-          setSelectedItem((selectedItem - 1 + len) % len);
-        } 
-        else if (event.key === "ArrowDown") {
-          setSelectedItem((selectedItem + 1) % len);
-        } 
-        else if (event.key === "Enter" && selectedItem >= 0) {
-          handleValueChange(suggestions[selectedItem]);
-          setSelectedItem(-1);
-        } 
-        else if (event.key === "Escape") {
-          setShowSuggestions(false);
-        }
+      if (len <= 0) {
+        return;
+      }
+      if (event.key === "ArrowUp" && selectedItem >= 0) {
+        setSelectedItem((selectedItem - 1 + len) % len);
+      } else if (event.key === "ArrowDown") {
+        setSelectedItem((selectedItem + 1) % len);
+      } else if (event.key === "Enter" && selectedItem >= 0) {
+        handleValueChange(suggestions[selectedItem]);
+        setSelectedItem(-1);
+      } else if (event.key === "Escape") {
+        setShowSuggestions(false);
       }
     };
     document.addEventListener("keydown", handleKeyDown, true);
@@ -82,50 +124,25 @@ export default function TextBox(props: TextBoxProps) {
     return () => {
       document.removeEventListener("keydown", handleKeyDown, true);
     };
-  }, [selectedItem, suggestions]);
-
-
-  // Handles when a suggestion is clicked
-  const handleValueChange = useCallback((suggestion: string) => {
-    setShowSuggestions(false);
-    props.setValue(suggestion);
-  }, [props]);
-
-
-  // Handles when there is a change in the textfield
-  const handleOnChange = (event: ChangeEvent<HTMLInputElement>) => {
-    props.handleChange(event);
-    setSelectedItem(-1);
-    setShowSuggestions(true); // Show suggestions when typing
-  };
-
-
-  // Handles the highlighted text functionality
-  const highlightMatchedText = useCallback((suggestion: string, input: string) => {
-    const startIdx = suggestion.toLowerCase().indexOf(input.toLowerCase());
-    if (startIdx === 0) {
-      const endIdx = input.length;
-      const matchedText = suggestion.slice(0, endIdx);
-      const remainingText = suggestion.slice(endIdx);
-
-      return (
-        <>
-          <span className="highlight">{matchedText}</span>
-          {remainingText}
-        </>
-      );
-    }
-    return suggestion;
-  }, []);
+  }, [selectedItem, suggestions, handleValueChange]);
 
   return (
     <>
       <div className="text-bar" ref={autoCompleteRef}>
         <TextField
-          label={props.label}
-          trailing={<Icon.CloseCircleFill onClick={props.handleClick} style={{ cursor: "pointer" }} />}
+          textFieldProps={{
+            style: inputFieldStyle || {
+              width: '200px',
+              paddingRight: '30px'
+            }
+          }}
+          label={label || ''}
           onChange={handleOnChange}
-          value={props.value}
+          value={value}
+        />
+        <Icon.CloseCircleFill
+          className="icon-inside-input"
+          onClick={handleClick}
         />
       </div>
 
@@ -137,16 +154,15 @@ export default function TextBox(props: TextBoxProps) {
             key={suggestion}
           >
             <ListItem
-              trailing={props.button}
-              UNSAFE_style={{display: "flex", alignItems: "center", width: "100%",justifyContent: "space-between"}}
+              trailing={trailing}
+              UNSAFE_className="list-item"
+              key={index}
             >
-              <div style={{ display: "flex", alignItems: "center", flexGrow: 1, marginRight: '8px' }}>
-                <div style={{ marginRight: '4px' }}>
-                  {props.icon}
+              <div className="list">
+                <div className="list-icon">
+                  {leading}
                 </div>
-                <div>
-                  {highlightMatchedText(suggestion, props.value)}
-                </div>
+                {highlightMatchedText(suggestion, value)}
               </div>
             </ListItem>
           </List>
@@ -154,4 +170,6 @@ export default function TextBox(props: TextBoxProps) {
       </div>
     </>
   );
-}
+};
+
+export default AutoComplete;
