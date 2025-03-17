@@ -1,19 +1,22 @@
 import "./App.css";
+import React, { useState, ChangeEvent } from "react";
 import AutoComplete from "./components/AutoComplete";
-import { useState, ChangeEvent } from "react";
 import options from "./components/Suggestions";
 import * as Icon from "@livingdesign/icons-indigo";
-import { LinkButton } from "@livingdesign/react";
+import { Button } from "@livingdesign/react";
 
-export default function App() {
+const App: React.FC = () => {
   const [value, setValue] = useState<string>("");
-  const autoComplete: string[] = value === "" ? [] : options.filter((option) => option.toLowerCase().startsWith(value.toLowerCase())).slice(0, 10);
 
-  const handleChange = (event: ChangeEvent<HTMLInputElement>): void => {
+  const autoComplete = value === "" ? [] : options
+    .filter((option) => option.toLowerCase().startsWith(value.toLowerCase()))
+    .slice(0, 10);
+
+  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     setValue(event.target.value);
   };
 
-  const handleClick = (): void => {
+  const handleClick = () => {
     setValue("");
   };
 
@@ -21,17 +24,24 @@ export default function App() {
     <>
       <AutoComplete
         value={value}
+        setValue={setValue}
+        autoComplete={autoComplete}
+        label="Auto-Complete Suggestions"
         handleChange={handleChange}
         handleClick={handleClick}
-        setValue={setValue}
-        label="Auto-Complete Suggestions"
-        autoComplete={autoComplete}
-        icon={<Icon.Pencil size="small" />}
-        button= {<LinkButton trailing={<Icon.Eye/>}>
-                  click
-                </LinkButton>
+        leading={<Icon.Pencil size="small" />}
+        trailing={
+          <Button UNSAFE_style={{ height: "20px", width: "60px" }} trailing={<Icon.Box />}>
+            click
+          </Button>
         }
+        inputFieldStyle={{
+          width: '250px',
+          paddingRight: '30px'
+        }}
       />
     </>
   );
-}
+};
+
+export default App;
