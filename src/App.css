@@ -1,87 +1,92 @@
 .text-bar {
-font-size: 12px;
-position: relative;
+  font-size: 12px;
+  position: relative;
+  width: 90%;
 }
 
-.icon-inside-input{
-cursor: pointer;
-position: absolute;
-left: 267px;
-top: 47%
+.icon-inside-input {
+  cursor: pointer;
+  position: absolute;
+  right: -30px;
+  top: 47%;
 }
 
 .suggestion-list {
-font-size: 14px;
-opacity: 0.75;
-position: absolute;
-background-color: white; 
-border-radius: 4px;
-box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1); 
-z-index: 1000; 
-width: 288px;
+  font-size: 14px;
+  opacity: 0.75;
+  position: absolute;
+  background-color: white;
+  border-radius: 4px;
+  box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  width: 91.5%;
 }
 
 .suggestion-wrapper {
-display: flex;
-flex-direction: column;
+  display: flex;
+  flex-direction: column;
 }
 
 .suggestion-list li {
-list-style: none;
-padding: 5px;
-cursor: pointer;
-display: flex;
-align-items: center; 
-justify-content: space-between;
-height: 30px;
+  list-style: none;
+  padding: 5px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 30px;
 }
 
 .suggestion-list li:hover {
-background-color: rgba(212, 212, 212);
+  background-color: rgba(212, 212, 212);
 }
 
-.grey{
-background-color: rgba(212, 212, 212);
+.grey {
+  background-color: rgba(212, 212, 212);
 }
 
 .highlight {
-color: black;
-font-weight: bold;
+  color: black;
+  font-weight: bold;
 }
 
 .highlighted-background {
-padding-inline-start: 0px;
-list-style: none;
-margin: 0px 0px;
-background-color: rgba(212, 212, 212);
+  padding-inline-start: 0px;
+  list-style: none;
+  margin: 0px 0px;
+  background-color: rgba(212, 212, 212);
 }
 
-.width{
-padding-inline-start: 0px;
-list-style: none;
-margin: 0px 0px
+.width {
+  padding-inline-start: 0px;
+  list-style: none;
+  margin: 0px 0px;
 }
 
-.list-item{
-display: flex;
-align-items: center;
-width: 100%;
-justify-content: space-between
+.list-item {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  justify-content: space-between;
 }
 
-.list{
-display: flex;
-align-items: center;
-flex-grow: 1;
-margin-right: 8px;
+.list {
+  display: flex;
+  align-items: center;
+  flex-grow: 1;
+  margin-right: 8px;
 }
 
-.list-icon{
-margin-right: 4px;
+.list-icon {
+  margin-right: 4px;
 }
 
 .divider {
-margin: 0;
-border: none;
-border-top: 1px solid #ccc;
+  margin: 0;
+  border: none;
+  border-top: 1px solid #ccc;
+}
+
+.greyColor {
+  color: rgb(40, 40, 40);
 }
