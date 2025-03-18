@@ -32,13 +32,14 @@ const AutoComplete: React.FC<AutoCompleteProps> = ({
   const inputValueRef = useRef(value);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-
   // Handles when a suggestion is clicked
-  const handleValueChange = useCallback((suggestion: string) => {
+  const handleValueChange = useCallback(
+    (suggestion: string) => {
       setShowSuggestions(false);
       setValue(suggestion);
-    },[setValue]);
-
+    },
+    [setValue]
+  );
 
   // Handles when there is a change in the textfield
   const handleOnChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -47,9 +48,9 @@ const AutoComplete: React.FC<AutoCompleteProps> = ({
     setShowSuggestions(true); // Show suggestions when typing
   };
 
-
   // Handles the highlighted text functionality
-  const highlightMatchedText = useCallback((suggestion: string, input: string) => {
+  const highlightMatchedText = useCallback(
+    (suggestion: string, input: string) => {
       const startIdx = suggestion.toLowerCase().indexOf(input.toLowerCase());
       if (startIdx === 0) {
         const endIdx = input.length;
@@ -59,18 +60,22 @@ const AutoComplete: React.FC<AutoCompleteProps> = ({
         return (
           <div>
             <span className="highlight">{matchedText}</span>
-            {remainingText}
+            <span className="greyColor">{remainingText}</span>
           </div>
         );
       }
       return suggestion;
-    },[]);
-
+    },
+    []
+  );
 
   // For handling click outside component (suggestions should go away)
   useEffect(() => {
     const handleOutsideClick = (event: MouseEvent) => {
-      if (autoCompleteRef.current && !autoCompleteRef.current.contains(event.target as Node)) {
+      if (
+        autoCompleteRef.current &&
+        !autoCompleteRef.current.contains(event.target as Node)
+      ) {
         setShowSuggestions(false);
       }
     };
@@ -80,7 +85,6 @@ const AutoComplete: React.FC<AutoCompleteProps> = ({
       document.removeEventListener("click", handleOutsideClick);
     };
   }, []);
-
 
   // For adding debounce functionality, clearing unnecessary timeouts
   useEffect(() => {
@@ -99,7 +103,6 @@ const AutoComplete: React.FC<AutoCompleteProps> = ({
       if (timeoutRef.current) clearTimeout(timeoutRef.current);
     };
   }, [value, autoComplete]);
-  
 
   // For handling keyboard navigation through the list
   useEffect(() => {
@@ -110,15 +113,12 @@ const AutoComplete: React.FC<AutoCompleteProps> = ({
       }
       if (event.key === "ArrowUp" && selectedItem >= 0) {
         setSelectedItem((selectedItem - 1 + len) % len);
-      } 
-      else if (event.key === "ArrowDown") {
+      } else if (event.key === "ArrowDown") {
         setSelectedItem((selectedItem + 1) % len);
-      } 
-      else if (event.key === "Enter" && selectedItem >= 0) {
+      } else if (event.key === "Enter" && selectedItem >= 0) {
         handleValueChange(suggestions[selectedItem]);
         setSelectedItem(-1);
-      } 
-      else if (event.key === "Escape") {
+      } else if (event.key === "Escape") {
         setShowSuggestions(false);
       }
     };
@@ -135,7 +135,7 @@ const AutoComplete: React.FC<AutoCompleteProps> = ({
         <TextField
           textFieldProps={{
             style: inputFieldStyle || {
-              width: "200px",
+              width: "100%",
               paddingRight: "30px",
             },
           }}
@@ -151,7 +151,10 @@ const AutoComplete: React.FC<AutoCompleteProps> = ({
 
       <div className="suggestion-list" ref={autoCompleteRef}>
         {showSuggestions && suggestions.map((suggestion, index) => (
-            <div key = {index} className={`suggestion-wrapper ${index === selectedItem ? "highlighted-background" : ""}`}>
+            <div
+              key={index}
+              className={`suggestion-wrapper ${index === selectedItem ? "highlighted-background" : ""}`}
+            >
               <List
                 UNSAFE_className="width"
                 onClick={() => {handleValueChange(suggestion);}}
@@ -163,9 +166,7 @@ const AutoComplete: React.FC<AutoCompleteProps> = ({
                   key={index}
                 >
                   <div className="list">
-                    <div className="list-icon">
-                      {leading}
-                    </div>
+                    <div className="list-icon">{leading}</div>
                     {highlightMatchedText(suggestion, value)}
                   </div>
                 </ListItem>
